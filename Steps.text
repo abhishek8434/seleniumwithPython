@@ -1,0 +1,113 @@
+Selenium Web Automation Scripts
+Overview
+This repository contains various Selenium WebDriver scripts for automating web interactions, including searching, form submissions, data verification, and more. The scripts are written in Python using the Selenium WebDriver library, and they provide a foundation for automated testing and web scraping tasks.
+
+Key Features:
+Automating web interactions with Selenium WebDriver.
+Performing search and verification tasks.
+Web scraping for data extraction.
+Sample use of XPath and CSS selectors for element location.
+Prerequisites
+Before running the scripts in this repository, ensure the following tools are installed:
+
+Python 3.x (preferably Python 3.6 or higher).
+Selenium WebDriver library.
+ChromeDriver (or another browser driver, depending on your choice of browser).
+Installing Python
+Download and install Python from the official website: Python Downloads
+
+Installing Selenium WebDriver
+You can install Selenium using pip (Python’s package manager):
+
+bash
+Copy code
+pip install selenium
+Downloading ChromeDriver
+If you're using Chrome as your browser, you’ll need to download the appropriate ChromeDriver version:
+
+Visit ChromeDriver Downloads.
+Make sure the ChromeDriver version matches the version of your installed Chrome browser.
+How to Run the Scripts
+1. Clone the Repository (if applicable)
+If you are using this as a repository, clone it to your local machine using:
+
+bash
+Copy code
+git clone https://github.com/your-username/selenium-web-automation.git
+cd selenium-web-automation
+2. Run the Script
+To run a Python script, open a terminal/command prompt in the script’s directory and use the following command:
+
+bash
+Copy code
+python script_name.py
+For example:
+
+bash
+Copy code
+python search_verification.py
+3. Check the Results
+The script will output the results of the actions (e.g., search query verification). The terminal will display whether the expected result was found or not.
+
+Example Output:
+bash
+Copy code
+LambdaTest - Selenium Playground
+Text verified successfully! : Showing 1 to 5 of 5 entries (filtered from 24 total entries)
+Example Script: Search and Verification
+This is an example script that automates the process of searching for "New York" on the LambdaTest Playground website, verifying if the expected result appears.
+
+python
+Copy code
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
+# Initialize WebDriver using Chrome
+driver = webdriver.Chrome()
+
+# Open a webpage
+driver.get("https://www.lambdatest.com/selenium-playground/table-sort-search-demo")
+
+# Print the title of the webpage
+print(driver.title)
+
+# Find the search bar using its xpath
+searchxpath = "/html/body/div[1]/div/section[2]/div/div/div/div/div[2]/label/input"
+search_box = driver.find_element(By.XPATH, searchxpath)
+
+# Type a search query into the search bar
+search_box.send_keys("New York")
+
+# Submit the search form (equivalent to pressing the 'Enter' key)
+search_box.send_keys(Keys.RETURN)
+
+# Locate the element that contains the text
+message_element = driver.find_element(By.CSS_SELECTOR, "#example_info")
+
+# Get the actual text from the element
+actual_text = message_element.text
+
+# Define the expected text
+expected_text = "Showing 1 to 5 of 5 entries (filtered from 24 total entries)"
+
+# Verify if the actual text matches the expected text
+if actual_text == expected_text:
+    print(f"Text verified successfully! : {actual_text}")
+else:
+    print(f"Text verification failed! Expected: {expected_text}, but got: {actual_text}")
+
+# Optionally, wait for some time for results to load
+driver.implicitly_wait(5)
+
+# Wait for 2 seconds before closing the browser
+time.sleep(2)
+
+
+# Close the browser
+driver.quit()
+
+Troubleshooting
+Driver Issues: Make sure the browser driver (e.g., ChromeDriver) is compatible with your browser version.
+Element Not Found: If you encounter errors related to elements not being found, you may need to update the XPath or CSS selectors by inspecting the webpage.
+Installation Errors: If the pip install selenium command fails, ensure that your Python and pip installations are correct.
