@@ -34,4 +34,4 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: |
-          pytest -v --tb=short tests/seleniumwithpytest.py
+          pytest --maxfail=1 --disable-warnings -q
