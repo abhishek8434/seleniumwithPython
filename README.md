@@ -1,159 +1,168 @@
+# Selenium Automation with Python
 
-# Setting Up Selenium with Python in Visual Studio Code (VSCode)
+This project demonstrates how to set up and run Selenium tests using Python and Pytest. It includes integration with GitHub Actions for Continuous Integration (CI), ensuring automated testing on every push or pull request.
 
 ## Project Structure
+
 ```
 automationwithpython/
-├── tests/               # Folder for your Selenium test scripts
-│   └── test_script.py   # Example Python file for your Selenium code
-└── README.md            # Documentation for the project
+├── .github/
+│   └── workflows/
+│       └── build.yml         # GitHub Actions workflow for running tests
+├── tests/
+│   ├── seleniumwithpytest.py  # Your main Selenium test script
+│   └── conftest.py            # Configuration for pytest fixtures
+├── .gitignore                 # Ignore files/folders for Git
+├── README.md                  # Documentation for the project
+├── requirements.txt           # List of dependencies
+└── build.yml                  # GitHub Actions configuration file
 ```
 
 ## Prerequisites
-1. **Python**: Download and install Python from the [official Python website](https://www.python.org/). During installation, ensure the option "Add Python to PATH" is checked.
-2. **Visual Studio Code**: Download and install VSCode from the [official website](https://code.visualstudio.com/).
 
----
+- **Python**: You need Python 3.x installed on your machine. Download from the [official Python website](https://www.python.org/downloads/).
+- **Visual Studio Code (VSCode)**: Recommended IDE. Download from [here](https://code.visualstudio.com/).
 
-## Step 1: Install Required Extensions in VSCode
-1. Open VSCode.
-2. Go to the Extensions view (Ctrl+Shift+X or click the Extensions icon).
-3. Install the following extensions:
-   - **Python** (by Microsoft)
-   - **Pylance** (for IntelliSense and auto-completion)
+## Installation
 
----
+1. Clone the repository:
 
-## Step 2: Install Selenium and pytest
-1. Open the terminal in VSCode.
-2. Run the following command to install Selenium and pytest:
-   ```bash
-   pip install selenium pytest
-   ```
-
----
-
-## Step 3: Download a WebDriver
-### Option 1: Manually Download
-1. Download the WebDriver for the browser you plan to use:
-   - **Chrome**: [ChromeDriver](https://sites.google.com/chromium.org/driver/)
-   - **Firefox**: [GeckoDriver](https://github.com/mozilla/geckodriver/releases)
-   - **Edge**: [EdgeDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
-2. Ensure the WebDriver is added to your system's PATH or placed in the same directory as your script.
-
-### Option 2: Using `webdriver-manager` (Recommended)
-The `webdriver-manager` library automatically downloads and manages browser drivers for you.
-1. Install `webdriver-manager`:
-   ```bash
-   pip install webdriver-manager
-   ```
-2. Update your Selenium script to use `webdriver-manager`. Example for Chrome:
-   ```python
-   from selenium import webdriver
-   from webdriver_manager.chrome import ChromeDriverManager
-
-   driver = webdriver.Chrome(ChromeDriverManager().install())
-   driver.get("https://www.google.com")
-   print(driver.title)
-   driver.quit()
-   ```
-3. Example for Firefox:
-    ```python
-    from selenium import webdriver
-    from webdriver_manager.firefox import GeckoDriverManager
-
-    driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
-    ```
-4. Example for Edge:
-    ```python
-    from selenium import webdriver
-    from webdriver_manager.microsoft import EdgeChromiumDriverManager
-
-    driver = webdriver.Edge(EdgeChromiumDriverManager().install())
+    ```bash
+    git clone https://github.com/your-username/automationwithpython.git
+    cd automationwithpython
     ```
 
----
+2. Install dependencies:
 
-## Step 4: Alternative Driver Installation Options
-1. Install all major browser drivers using:
-   ```bash
-   pip install chromedriver-py geckodriver-autoinstaller msedge-selenium-tools[selenium]
-   ```
-2. Auto-install GeckoDriver using `geckodriver-autoinstaller`:
-   ```python
-   import geckodriver_autoinstaller
-   from selenium import webdriver
-
-   geckodriver_autoinstaller.install()
-   driver = webdriver.Firefox()
-   ```
-3. Example for Chrome:
-    ```python
-    from selenium import webdriver
-
-    driver = webdriver.Chrome()
-    ```
-4. Example for Edge:
-    ```python
-    from selenium import webdriver
-    from msedge.selenium_tools import Edge, EdgeOptions
-
-    # Set up Edge options (optional, for advanced configurations)
-    edge_options = EdgeOptions()
-    edge_options.use_chromium = True
-
-    # Initialize the Edge WebDriver
-    driver = Edge(executable_path="path_to_edge_driver", options=edge_options)
+    ```bash
+    pip install -r requirements.txt
     ```
 
----
+3. Install the necessary WebDriver for your browser, or use `webdriver-manager` to manage drivers automatically.
 
-## Step 5: Write a Selenium Script
-1. Create a new Python file in the `tests` folder, e.g., `test_script.py`.
-2. Example script for Chrome:
-   ```python
-   from selenium import webdriver
-   from webdriver_manager.chrome import ChromeDriverManager
+    ```bash
+    pip install webdriver-manager
+    ```
 
-   driver = webdriver.Chrome(ChromeDriverManager().install())
-   driver.get("https://www.google.com")
-   print(driver.title)
-   driver.quit()
-   ```
+## Usage
 
----
+### Running Tests Locally
 
-## Step 6: Write Tests with Pytest
-1. Create a test script in the `tests` folder. Example `test_script.py`:
-   ```python
-   from selenium import webdriver
-   from webdriver_manager.chrome import ChromeDriverManager
-   import pytest
+To run the tests locally, you can use the following command in your terminal:
 
-   @pytest.fixture
-   def driver():
-       driver = webdriver.Chrome(ChromeDriverManager().install())
-       yield driver
-       driver.quit()
+```bash
+pytest -v --tb=short tests/
+```
 
-   def test_google_title(driver):
-       driver.get("https://www.google.com")
-       assert "Google" in driver.title
-   ```
+This will run all tests in the `tests` directory, outputting verbose test results with shortened tracebacks.
 
----
+### Running Tests with GitHub Actions
 
-## Step 7: Run the Script
-1. Save the file.
-2. Open the terminal in VSCode.
-3. Run the test using `pytest`:
-   ```bash
-   pytest tests/test_script.py
-   ```
+When you push your changes to GitHub, the GitHub Actions workflow defined in `.github/workflows/build.yml` will automatically trigger, running all tests in the `tests` directory. You can view the results in the **Actions** tab of your GitHub repository.
 
----
+### Example Test
 
-## Notes
-- Ensure Python, Selenium, pytest, and WebDriver are correctly installed and up-to-date.
-- For browser-specific setup, refer to the official documentation of the respective WebDriver.
+Here’s an example of a simple test for the Google homepage:
+
+```python
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+import pytest
+
+@pytest.fixture
+def driver():
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    yield driver
+    driver.quit()
+
+def test_google_title(driver):
+    driver.get("https://www.google.com")
+    assert "Google" in driver.title
+```
+
+### Test Fixtures
+
+In `conftest.py`, you can define reusable fixtures for setting up WebDriver instances, which can be shared across multiple test files:
+
+```python
+import pytest
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+@pytest.fixture
+def driver():
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    yield driver
+    driver.quit()
+```
+
+## GitHub Actions CI/CD
+
+The GitHub Actions workflow defined in `.github/workflows/build.yml` will automatically:
+
+- Set up Python and dependencies.
+- Run all tests with `pytest`.
+- Show detailed results in the GitHub Actions interface.
+
+### Example `build.yml` Workflow
+
+```yaml
+name: Selenium Test Automation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  selenium-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest selenium webdriver-manager
+
+      - name: Run Selenium tests
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: |
+          pytest -v --tb=short tests/
+
+```
+
+This workflow ensures your tests are run automatically with each push or pull request to the `main` branch.
+
+## Requirements
+
+The project dependencies are listed in `requirements.txt`:
+
+```
+selenium
+pytest
+webdriver-manager
+```
+
+You can install them using the following command:
+
+```bash
+pip install -r requirements.txt
+```
+
 
