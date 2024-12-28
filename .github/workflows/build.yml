@@ -1,6 +1,5 @@
 name: Run Selenium Tests
 
-# Trigger the pipeline when pushing to the repository
 on:
   push:
     branches:
@@ -32,21 +31,16 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Ensure you have all dependencies in requirements.txt
+          pip install -r requirements.txt
 
-      # Step 4: Install WebDriver Manager dependencies
-      - name: Install WebDriver Manager dependencies
-        run: |
-          pip install webdriver-manager
-
-      # Step 5: Run the tests
+      # Step 4: Run the tests
       - name: Run tests with pytest
         run: |
-          pytest tests/qa_selenium_test.py --browser ${{ matrix.browser }} -v  # Run the tests for the specified browser
+          pytest tests/qa_selenium_test.py --browser ${{ matrix.browser }} -v
 
-      # Step 6: Upload test results
+      # Step 5: Upload test results
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
         with:
           name: selenium-test-results
-          path: test-results/  # Upload the test-results folder
+          path: test-results/
