@@ -14,14 +14,24 @@ from webdriver_manager.firefox import GeckoDriverManager
 
 
 def get_driver(browser):
-    chrome_options = Options()
-    chrome_options.add_argument('--headless')  # Run in headless mode
-    chrome_options.add_argument('--disable-gpu')  # Disable GPU hardware acceleration
-    chrome_options.add_argument('--no-sandbox')  # Disable sandbox for running in Docker
-    chrome_options.add_argument('--remote-debugging-port=9222')  # Fix the DevToolsActivePort issue
-    
     if browser == 'chrome':
-        driver = webdriver.Chrome(options=chrome_options)
+        chrome_options = ChromeOptions()
+        chrome_options.add_argument('--headless')  # Run in headless mode
+        chrome_options.add_argument('--disable-gpu')  # Disable GPU hardware acceleration
+        chrome_options.add_argument('--no-sandbox')  # Disable sandbox for running in Docker
+        chrome_options.add_argument('--remote-debugging-port=9222')  # Fix the DevToolsActivePort issue
+        
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+
+    elif browser == 'firefox':
+        firefox_options = FirefoxOptions()
+        firefox_options.add_argument('--headless')  # Run in headless mode
+        
+        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=firefox_options)
+    
+    else:
+        raise ValueError(f"Unsupported browser: {browser}")
+    
     return driver
 
 
