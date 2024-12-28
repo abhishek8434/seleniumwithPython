@@ -34,4 +34,4 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: |
-          pytest -v --tb=short test_script.py
+          pytest -v --tb=short seleniumwithpytest.py
