@@ -44,7 +44,7 @@ def test_table_search(driver):
     driver.maximize_window()
 
     # Validate page title
-    assert "Table Sort And Search Demo" in driver.title, "Page title does not match"
+    assert "Selenium Grid Online | Run Selenium Test On Cloud" in driver.title, "Page title does not match"
 
     # Find the search bar and perform the search
     search_xpath = "//label/input[@type='search']"
