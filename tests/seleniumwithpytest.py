@@ -25,13 +25,14 @@ def get_driver(browser="chrome"):
     else:
         raise ValueError(f"Unsupported browser: {browser}")
 
+
 @pytest.fixture
-def driver():
+def driver(browser):
     """Pytest fixture to initialize and quit the WebDriver."""
-    browser = "chrome"  # Change to "firefox" for Firefox testing
     driver = get_driver(browser)
     yield driver
     driver.quit()
+
 
 def test_table_search(driver):
     """Test to validate search functionality on the Selenium Playground."""
@@ -43,7 +44,7 @@ def test_table_search(driver):
     driver.maximize_window()
 
     # Validate page title
-    assert "Selenium Grid Online | Run Selenium Test On Cloud" in driver.title, "Page title does not match"
+    assert "Table Sort And Search Demo" in driver.title, "Page title does not match"
 
     # Find the search bar and perform the search
     search_xpath = "//label/input[@type='search']"
@@ -66,6 +67,7 @@ def test_table_search(driver):
     time.sleep(2)
 
     assert actual_text == expected_text, f"Text verification failed! Expected: '{expected_text}', but got: '{actual_text}'"
+
 
 if __name__ == "__main__":
     pytest.main(["-v", "-s", __file__])
