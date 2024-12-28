@@ -62,7 +62,7 @@ When you push your changes to GitHub, the GitHub Actions workflow defined in `.g
 
 ### Example Test
 
-Here’s an example of a simple test for the Google homepage:
+Here’s an example of a simple test for the Playground homepage:
 
 ```python
 from selenium import webdriver
@@ -75,9 +75,15 @@ def driver():
     yield driver
     driver.quit()
 
-def test_google_title(driver):
-    driver.get("https://www.google.com")
-    assert "Google" in driver.title
+def test_title(driver):
+    url = "https://www.lambdatest.com/selenium-playground/table-sort-search-demo"
+    driver.get(url)
+
+    # Maximize the window
+    driver.maximize_window()
+
+    # Validate page title
+    assert "Selenium Grid Online | Run Selenium Test On Cloud" in driver.title, "Page title does not match"
 ```
 
 ### Test Fixtures
