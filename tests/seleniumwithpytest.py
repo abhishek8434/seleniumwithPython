@@ -12,8 +12,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
 
-def get_driver(browser="chrome"):
-    driver = webdriver.Chrome()
+def get_driver(browser):
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')  # Run in headless mode
+    chrome_options.add_argument('--disable-gpu')  # Disable GPU hardware acceleration
+    chrome_options.add_argument('--no-sandbox')  # Disable sandbox for running in Docker
+    chrome_options.add_argument('--remote-debugging-port=9222')  # Fix the DevToolsActivePort issue
+    
+    if browser == 'chrome':
+        driver = webdriver.Chrome(options=chrome_options)
+    return driver
 
 
 
