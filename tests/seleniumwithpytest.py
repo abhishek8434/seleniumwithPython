@@ -13,22 +13,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 
 
 def get_driver(browser="chrome"):
-    """Initialize the WebDriver for the specified browser."""
-    if browser == "chrome":
-        chrome_options = ChromeOptions()
-        chrome_options.add_argument("--headless")  # Run Chrome in headless mode
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        service = ChromeService(ChromeDriverManager().install())
-        return webdriver.Chrome(service=service, options=chrome_options)
-    elif browser == "firefox":
-        firefox_options = FirefoxOptions()
-        firefox_options.add_argument("--headless")  # Run Firefox in headless mode
-        service = FirefoxService(GeckoDriverManager().install())
-        return webdriver.Firefox(service=service, options=firefox_options)
-    else:
-        raise ValueError(f"Unsupported browser: {browser}")
+    driver = webdriver.Chrome()
 
 
 
