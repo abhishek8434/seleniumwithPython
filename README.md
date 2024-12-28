@@ -1,9 +1,9 @@
+
 # Setting Up Selenium with Python in Visual Studio Code (VSCode)
 
 ## Project Structure
 ```
 automationwithpython/
-├── venv/                # Virtual environment (do not modify files here)
 ├── tests/               # Folder for your Selenium test scripts
 │   └── test_script.py   # Example Python file for your Selenium code
 └── README.md            # Documentation for the project
@@ -24,11 +24,11 @@ automationwithpython/
 
 ---
 
-## Step 2: Install Selenium
+## Step 2: Install Selenium and pytest
 1. Open the terminal in VSCode.
-2. Run the following command to install Selenium:
+2. Run the following command to install Selenium and pytest:
    ```bash
-   pip install selenium
+   pip install selenium pytest
    ```
 
 ---
@@ -121,22 +121,39 @@ The `webdriver-manager` library automatically downloads and manages browser driv
    driver.quit()
    ```
 
+---
+
+## Step 6: Write Tests with Pytest
+1. Create a test script in the `tests` folder. Example `test_script.py`:
+   ```python
+   from selenium import webdriver
+   from webdriver_manager.chrome import ChromeDriverManager
+   import pytest
+
+   @pytest.fixture
+   def driver():
+       driver = webdriver.Chrome(ChromeDriverManager().install())
+       yield driver
+       driver.quit()
+
+   def test_google_title(driver):
+       driver.get("https://www.google.com")
+       assert "Google" in driver.title
+   ```
 
 ---
 
-## Step 6: Run the Script
+## Step 7: Run the Script
 1. Save the file.
 2. Open the terminal in VSCode.
-3. Run the script using:
+3. Run the test using `pytest`:
    ```bash
-   python tests/test_script.py
+   pytest tests/test_script.py
    ```
 
 ---
 
 ## Notes
-- Ensure Python, Selenium, and WebDriver are correctly installed and up-to-date.
+- Ensure Python, Selenium, pytest, and WebDriver are correctly installed and up-to-date.
 - For browser-specific setup, refer to the official documentation of the respective WebDriver.
-
-Happy Testing!
 
