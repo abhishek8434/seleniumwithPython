@@ -1,48 +1,83 @@
+import pytest
 import time
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 
-# Initialize WebDriver using Chrome
-driver = webdriver.Chrome()  # No need to specify executable_path; it's handled by chromedriver-py
 
-# Open a webpage
-driver.get("https://www.lambdatest.com/selenium-playground/table-sort-search-demo")
+def get_driver(browser):
+    if browser == 'chrome':
+        chrome_options = ChromeOptions()
+        chrome_options.add_argument('--headless')  # Run in headless mode
+        chrome_options.add_argument('--disable-gpu')  # Disable GPU hardware acceleration
+        chrome_options.add_argument('--no-sandbox')  # Disable sandbox for running in Docker
+        chrome_options.add_argument('--remote-debugging-port=9222')  # Fix the DevToolsActivePort issue
+        
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
-# Print the title of the webpage
-print(driver.title)
+    elif browser == 'firefox':
+        firefox_options = FirefoxOptions()
+        firefox_options.add_argument('--headless')  # Run in headless mode
+        
+        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=firefox_options)
+    
+    else:
+        raise ValueError(f"Unsupported browser: {browser}")
+    
+    return driver
 
-# Find the search bar using its xpath
-searchxpath = "/html/body/div[1]/div/section[2]/div/div/div/div/div[2]/label/input";
 
-search_box = driver.find_element(By.XPATH, searchxpath)
 
-# Type a search query into the search bar
-search_box.send_keys("New York")
+@pytest.fixture
+def driver(browser):
+    """Pytest fixture to initialize and quit the WebDriver."""
+    driver = get_driver(browser)
+    yield driver
+    driver.quit()
 
-# Submit the search form (equivalent to pressing the 'Enter' key)
-search_box.send_keys(Keys.RETURN)
 
-# Locate the element that contains the text
-message_element = driver.find_element(By.CSS_SELECTOR, "#example_info")  # Adjust selector as needed
+def test_table_search(driver):
+    """Test to validate search functionality on the Selenium Playground."""
+    # Open the webpage
+    url = "https://www.lambdatest.com/selenium-playground/table-sort-search-demo"
+    driver.get(url)
 
-# Get the actual text from the element
-actual_text = message_element.text
+    # Maximize the window
+    driver.maximize_window()
 
-# Define the expected text
-expected_text = "Showing 1 to 5 of 5 entries (filtered from 24 total entries)"
+    # Validate page title
+    assert "Selenium Grid Online | Run Selenium Test On Cloud" in driver.title, "Page title does not match"
 
-# Verify if the actual text matches the expected text
-if actual_text == expected_text:
-    print(f"Text verified successfully!")
-else:
-    print(f"Text verification failed! Expected: {expected_text}, but got: {actual_text}")
+    # Find the search bar and perform the search
+    search_xpath = "//label/input[@type='search']"
+    search_box = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, search_xpath))
+    )
+    search_query = "New York"
+    search_box.send_keys(search_query)
 
-# Optionally, wait for some time for results to load
-#driver.implicitly_wait(5)
+    # Allow time for search results to update
+    WebDriverWait(driver, 10).until(
+        EC.text_to_be_present_in_element((By.CSS_SELECTOR, "#example_info"), "Showing 1 to 5 of 5 entries")
+    )
 
-# Wait for 2 seconds before closing the browser
-time.sleep(2)
+    # Locate and validate the result text
+    message_element = driver.find_element(By.CSS_SELECTOR, "#example_info")
+    actual_text = message_element.text
+    expected_text = "Showing 1 to 5 of 5 entries (filtered from 24 total entries)"
 
-# Close the browser
-driver.quit()
+    time.sleep(2)
+
+    assert actual_text == expected_text, f"Text verification failed! Expected: '{expected_text}', but got: '{actual_text}'"
+
+
+if __name__ == "__main__":
+    pytest.main(["-v", "-s", __file__])
